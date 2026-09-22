@@ -41,7 +41,6 @@ src/                              the same modules the notebook writes out
 tests/                            unit tests (attribution maths + env checks)
 results/tables/                   per-run and aggregated CSVs
 results/figures/                  all generated figures
-paper/                            LaTeX source (IEEE conference format)
 ```
 
 ## Setup
