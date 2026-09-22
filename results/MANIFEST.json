@@ -1,0 +1,257 @@
+{
+  "experiment": "RL-CrowdNav V5 -- reward-shaping ablation via the complete 2^5 factorial",
+  "version": "5.0",
+  "generated_utc": "2026-09-19T12:15:52Z",
+  "software": {
+    "python": "3.12.13",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "torch": "2.10.0+cu128",
+    "gymnasium": "1.2.0",
+    "stable_baselines3": "2.9.0"
+  },
+  "hardware": {
+    "cpu_count": 4,
+    "gpus": [
+      "Tesla T4",
+      "Tesla T4"
+    ]
+  },
+  "design": {
+    "lattice_arms": [
+      "R12345",
+      "R1234",
+      "R1235",
+      "R1245",
+      "R1345",
+      "R2345",
+      "R123",
+      "R124",
+      "R125",
+      "R134",
+      "R135",
+      "R145",
+      "R234",
+      "R235",
+      "R245",
+      "R345",
+      "R12",
+      "R13",
+      "R14",
+      "R15",
+      "R23",
+      "R24",
+      "R25",
+      "R34",
+      "R35",
+      "R45",
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R0_none"
+    ],
+    "aliases": {
+      "R12345": "R1-5_full",
+      "R2345": "A1_no-goal",
+      "R1345": "A2_no-distance",
+      "R1245": "A3_no-space",
+      "R1235": "A4_no-ttc",
+      "R1234": "A5_no-jerk",
+      "R1": "B1_goal-only",
+      "R12": "B2_goal+dist",
+      "R125": "B3_goal+dist+jerk",
+      "R123": "B4_goal+dist+space",
+      "R124": "B5_goal+dist+ttc",
+      "R2": "B6_dist-only",
+      "R25": "B7_dist+jerk",
+      "R0_none": "Z_task-only",
+      "P12345_progress": "C1_progress-dist",
+      "P2345_progress": "C2_no-goal_progress"
+    },
+    "components": {
+      "R1": "goal reaching",
+      "R2": "distance shaping",
+      "R3": "personal space",
+      "R4": "time-to-collision",
+      "R5": "jerk / smoothness"
+    },
+    "reference": "R12345",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "steps_per_run": 500000,
+    "stage_E_steps": 750000,
+    "net_width": 128,
+    "n_envs": 4,
+    "n_parallel_runs": 4,
+    "eval_episodes": 500,
+    "test_seed_range": [
+      10000000,
+      10000499
+    ],
+    "equivalence_margin_success": 0.02,
+    "crowd_pool": {
+      "train_size": 16384,
+      "train_seed_base": 1000000
+    },
+    "stages": {
+      "A": "complete 2^5 lattice",
+      "B": "density n=10, {R3,R4} sub-factorial",
+      "C1": "w_jerk dose-response over [0.0, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2]",
+      "C2": "action low-pass filter mechanism control",
+      "D": "PBRS vs progress shaping form",
+      "E": "best configuration at extended budget + ONNX"
+    }
+  },
+  "scenario": {
+    "n_humans": 5,
+    "circle_radius": 4.0,
+    "robot_visible": false,
+    "kinematics": "holonomic",
+    "action_frame": "goal_aligned",
+    "time_step": 0.25,
+    "time_limit": 25.0
+  },
+  "env_config": {
+    "n_humans": 5,
+    "circle_radius": 4.0,
+    "position_noise": 0.5,
+    "robot_radius": 0.3,
+    "human_radius_range": [
+      0.3,
+      0.4
+    ],
+    "v_pref": 1.0,
+    "human_v_pref_range": [
+      0.8,
+      1.2
+    ],
+    "kinematics": "holonomic",
+    "action_frame": "goal_aligned",
+    "omega_max": 1.5,
+    "robot_visible": false,
+    "time_step": 0.25,
+    "time_limit": 25.0,
+    "orca_time_horizon": 5.0,
+    "orca_neighbour_dist": 10.0,
+    "human_goal_tolerance": 0.3,
+    "goal_tolerance": 0.3,
+    "w_goal": 1.0,
+    "w_dist": 0.6,
+    "w_space": 0.2,
+    "w_ttc": 0.02,
+    "w_jerk": 0.02,
+    "r_collision": -1.25,
+    "r_step": -0.005,
+    "gamma": 0.99,
+    "dist_mode": "pbrs",
+    "potential_scale": 8.0,
+    "r_comfort": 0.5,
+    "ttc_threshold": 3.0,
+    "ttc_epsilon": 0.2,
+    "pos_scale": 6.0,
+    "vel_scale": 1.5,
+    "action_filter_alpha": 0.0,
+    "emit_reward_parts": false,
+    "record_trajectory": false,
+    "use_goal": true,
+    "use_dist": true,
+    "use_space": true,
+    "use_ttc": true,
+    "use_jerk": true
+  },
+  "orca_crossvalidation": {
+    "max_abs_velocity_error": 1.3421438457839052e-06,
+    "n_agent_steps": 900
+  },
+  "budget_log": [
+    {
+      "stage": "crowd pool",
+      "elapsed_h": 0.065,
+      "remaining_h": 9.235
+    },
+    {
+      "stage": "reward audit",
+      "elapsed_h": 0.114,
+      "remaining_h": 9.186
+    },
+    {
+      "stage": "baselines",
+      "elapsed_h": 0.124,
+      "remaining_h": 9.176
+    },
+    {
+      "stage": "stage A training",
+      "elapsed_h": 6.84,
+      "remaining_h": 1.992
+    },
+    {
+      "stage": "stage A health",
+      "elapsed_h": 6.841,
+      "remaining_h": 1.991
+    },
+    {
+      "stage": "stage A evaluation",
+      "elapsed_h": 7.529,
+      "remaining_h": 1.302
+    },
+    {
+      "stage": "stage D",
+      "elapsed_h": 8.002,
+      "remaining_h": 0.829
+    },
+    {
+      "stage": "stage C1",
+      "elapsed_h": 8.571,
+      "remaining_h": 0.261
+    },
+    {
+      "stage": "figures",
+      "elapsed_h": 8.576,
+      "remaining_h": 0.256
+    }
+  ],
+  "figures": {
+    "fig1_learning_curves": "training curves, mean +/- s.e.m. across seeds",
+    "fig2_leave_one_out": "conventional leave-one-out bars with bootstrap CIs",
+    "fig3_attribution_and_interactions": "Shapley vs leave-one-out vs add-one-in, and the pairwise interaction matrix",
+    "fig4_lattice_landscape": "all 32 cells by number of active components",
+    "fig5_attribution_all_metrics": "Shapley/LOO/AOI on every metric",
+    "fig6_pareto": "collision vs navigation time, learned arms and classical planners",
+    "fig7_behaviour_profile": "arm x metric heatmap in s.d. units vs the reference",
+    "fig8_jerk_mechanism": "w_jerk dose-response and the action-filter mechanism control",
+    "fig10_trajectories": "qualitative trajectories on one shared held-out scenario"
+  },
+  "artifacts": {
+    "per_episode_eval_A.csv.gz": "every stage-A evaluation episode",
+    "per_run_summary_A.csv": "one row per (arm, seed)",
+    "aggregated_by_config_A.csv": "bootstrap mean / CI / median / IQR per arm",
+    "component_attribution.csv": "PRIMARY: Shapley, leave-one-out and add-one-in per component per metric",
+    "interactions.csv": "PRIMARY: pairwise Shapley interaction indices",
+    "mobius_dividends.csv": "full Moebius/Harsanyi decomposition",
+    "leave_one_out_tests.csv": "seed-level exact sign-flip tests vs the reference",
+    "equivalence_tests.csv": "TOST equivalence tests for the null components",
+    "shaping_form_contrast.csv": "PBRS vs progress shaping",
+    "jerk_dose_response.csv": "w_jerk sweep",
+    "mechanism_control.csv": "action-filter causal control",
+    "density_sweep.csv": "the {R3,R4} sub-factorial at two densities",
+    "reward_landscape_audit.csv": "competent / freeze / dash returns per arm, pre-training",
+    "arch_preflight.csv": "equal-wall-clock network-width selection",
+    "preflight.csv": "short-budget learning check + measured throughput",
+    "training_health.csv": "per-seed collapse and exploration-runaway detection",
+    "baselines_summary.csv": "freeze, straight-line and ORCA(sigma) planners",
+    "synthesis.txt": "the generated findings narrative",
+    "table1_leave_one_out.tex": "camera-ready conventional ablation table",
+    "table2_attribution.tex": "camera-ready attribution table",
+    "figures/": "300 dpi publication figures",
+    "onnx/": "exported policy + deployment_spec.json",
+    "runs/<arm>__seed<k>/": "model.zip, per-episode training logs, monitor, meta.json"
+  }
+}

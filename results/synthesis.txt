@@ -1,0 +1,32 @@
+DESIGN.  32 reward configurations x 6 training seeds x 500,000 steps, every policy evaluated deterministically on the same 500 held-out circle-crossing scenarios with 5 ORCA pedestrians and an invisible robot.
+
+FINDING 1 -- how much each component is worth, averaged over all 16 contexts.
+  1. R5 jerk / smoothness      phi=+0.643 [+0.463,+0.837] p=0.0312  ( 65.4% of the total effect)   LOO=+0.983  AOI=+0.486
+  2. R2 distance shaping       phi=+0.400 [+0.209,+0.572] p=0.0625  ( 40.7% of the total effect)   LOO=+0.818  AOI=+0.248
+  3. R1 goal reaching          phi=+0.007 [+0.002,+0.013] p=0.0625  (  0.7% of the total effect)   LOO=+0.008  AOI=+0.000
+  4. R3 personal space         phi=-0.001 [-0.079,+0.104] p=1.0000  ( -0.1% of the total effect)   LOO=+0.172  AOI=+0.000
+  5. R4 time-to-collision      phi=-0.066 [-0.151,-0.006] p=0.1875  ( -6.7% of the total effect)   LOO=+0.004  AOI=+0.000
+  => 1 of 5 components carry a materially non-zero share of the result on success rate: R5.
+     The remaining 4 (R1, R2, R3, R4) do not, ON SUCCESS.
+
+FINDING 2 -- where the conventional leave-one-out number misleads.
+  R2: leave-one-out +0.818 vs Shapley +0.400 -- the single-context number OVERSTATES this component's contribution by 0.417 success.
+  R3: leave-one-out +0.172 vs Shapley -0.001 -- the single-context number OVERSTATES this component's contribution by 0.173 success.
+  R5: leave-one-out +0.983 vs Shapley +0.643 -- the single-context number OVERSTATES this component's contribution by 0.340 success.
+
+FINDING 3 -- why: the interaction structure.
+  R4 x R5: -0.109 [-0.205,-0.031] SUBSTITUTES -- each covers for the other, so dropping either ALONE costs little and leave-one-out cannot see either of them.
+  R1 x R3: -0.009 [-0.020,-0.003] SUBSTITUTES -- each covers for the other, so dropping either ALONE costs little and leave-one-out cannot see either of them.
+  R2 x R5: +0.483 [+0.205,+0.760] COMPLEMENTS -- neither pays off without the other, so they must be tuned jointly.
+
+FINDING 4 -- the same five components, judged on SOCIAL rather than task metrics.
+  R1: min-separation phi=-0.0256 m, intrusions/episode phi=+0.0948
+  R2: min-separation phi=-0.4404 m, intrusions/episode phi=+0.3372
+  R3: min-separation phi=+0.0085 m, intrusions/episode phi=-0.0716
+  R4: min-separation phi=+0.0786 m, intrusions/episode phi=-0.0898
+  R5: min-separation phi=-0.6210 m, intrusions/episode phi=+0.6640
+  => A component with phi ~ 0 on success but a positive phi on separation and a negative phi on intrusions is buying social compliance at no task cost. For a SOCIALLY AWARE navigator that is a reason to keep it, not to delete it.
+
+FINDING 6 -- how sharply the smoothness weight has to be tuned.
+  w=0:0.00  w=0.002:0.00  w=0.005:0.00  w=0.01:0.33  w=0.02:0.97  w=0.05:0.87  w=0.1:0.51  w=0.2:0.71
+  => optimum near w_jerk = 0.02; the curve is non-monotone, which is diagnostic of an exploration effect rather than a preference.

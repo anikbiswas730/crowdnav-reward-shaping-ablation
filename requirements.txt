@@ -1,0 +1,12 @@
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+matplotlib>=3.7
+gymnasium>=0.29
+torch>=2.0
+stable-baselines3>=2.4
+# optional: policy export
+onnx>=1.15
+onnxruntime>=1.17
+# tests
+pytest>=7
