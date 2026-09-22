@@ -1,7 +1,5 @@
 # Reward-shaping ablation for crowd navigation
 
-Code, results and paper for *An Ablation Study of Reward Shaping Components in Deep Reinforcement Learning for Socially Aware Robot Navigation*.
-
 Most reward ablations in crowd navigation drop one term at a time and report the change. That number depends on which other terms happen to be present, and it can't see two terms that cover for each other. So instead of leave-one-out, this repo trains **every combination** of five reward terms (the full 2⁵ = 32 configurations, 6 seeds each) and computes exact Shapley values and pairwise interactions from the complete table.
 
 ## Main results
